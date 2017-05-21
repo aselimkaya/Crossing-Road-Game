@@ -1,0 +1,6 @@
+﻿  Assg1.cpp
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(7): warning C4244: 'initializing': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(169): warning C4244: 'argument': conversion from 'GLfloat' to 'GLsizei', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(249): warning C4244: 'argument': conversion from 'GLfloat' to 'int', possible loss of data
+  Assignment1.vcxproj -> C:\Users\ask\Documents\Visual Studio 2017\Projects\Assignment1\Debug\Assignment1.exe
+  Assignment1.vcxproj -> C:\Users\ask\Documents\Visual Studio 2017\Projects\Assignment1\Debug\Assignment1.pdb (Partial PDB)
