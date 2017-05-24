@@ -1,33 +1,34 @@
 #include <time.h>
 #include <stdlib.h>
-
+#include <vector>
 #include <gl/glut.h>
+
+typedef struct{
+	int x;
+	int y; // One of coordinate of a vehicle which is our reference point for drawing.
+	
+	int type; // If 1, it means this vehicle is a square. If 0, a rectangle.
+	
+	int direction; // If 1, the vehicle goes +x direction. If 0, it goes -x direction.
+} Vehicle;
 
 GLfloat hViewport = 600.0, wViewport = 500.0;
 GLfloat hTriangle = hViewport / 25.0, wTriangle = wViewport / 25.0;
 GLfloat xTriangle = wViewport / 2, yTriangle = hTriangle;
 
+std::vector<std::vector<Vehicle>> vehicleList (19);
+
+//This variable is a flag for triangle's direction. If it is 1, it means the triangle is going up. If it is -1, it means down.
 int isUpper = 1;
 
-void drawUpperTriangle() {
+void drawTriangle() {
 	//glClear(GL_COLOR_BUFFER_BIT);
 	
 	glColor3f(1.0, 0.0, 0.0);
 	glBegin(GL_TRIANGLES);
 		glVertex2f(xTriangle, yTriangle);
-		glVertex2f(xTriangle - (wTriangle / 2), yTriangle - hTriangle);
-		glVertex2f(xTriangle + (wTriangle / 2), yTriangle - hTriangle);
-	glEnd();
-}
-
-void drawLowerTriangle() {
-	//glClear(GL_COLOR_BUFFER_BIT);
-
-	glColor3f(1.0, 0.0, 0.0);
-	glBegin(GL_TRIANGLES);
-		glVertex2f(xTriangle, yTriangle);
-		glVertex2f(xTriangle - (wTriangle / 2), yTriangle + hTriangle);
-		glVertex2f(xTriangle + (wTriangle / 2), yTriangle + hTriangle);
+		glVertex2f(xTriangle - (wTriangle / 2), yTriangle - (isUpper * hTriangle));  //In here, we are using the flag.
+		glVertex2f(xTriangle + (wTriangle / 2), yTriangle - (isUpper * hTriangle));
 	glEnd();
 }
 
@@ -164,6 +165,59 @@ void drawRoad(){
 	glEnd();
 }
 
+void drawVehicles() {
+	glColor3f(0.0, 1.0, 0.0);
+	
+	for (std::vector<std::vector<Vehicle>>::iterator listIterator = vehicleList.begin(); listIterator != vehicleList.end(); ++listIterator) {
+		
+		std::vector<Vehicle> listTemp = *listIterator;
+		
+		for (std::vector<Vehicle>::iterator it = listTemp.begin(); it != listTemp.end(); ++it) {
+			Vehicle temp = *it;
+			if (temp.type) { // means this vehicle is a square
+				
+				if (temp.direction) { // for positive direction
+					glBegin(GL_POLYGON);
+						glVertex2f(temp.x, temp.y);
+						glVertex2f(temp.x-hTriangle, temp.y);
+						glVertex2f(temp.x - hTriangle, temp.y-hTriangle);
+						glVertex2f(temp.x, temp.y - hTriangle);
+					glEnd();
+				}
+				
+				else { // for negative direction
+					glBegin(GL_POLYGON);
+						glVertex2f(temp.x, temp.y);
+						glVertex2f(temp.x + hTriangle, temp.y);
+						glVertex2f(temp.x + hTriangle, temp.y - hTriangle);
+						glVertex2f(temp.x, temp.y - hTriangle);
+					glEnd();
+				}
+			}
+			
+			else { // means this vehicle is a rectangle
+				if (temp.direction) { // for positive direction
+					glBegin(GL_POLYGON);
+						glVertex2f(temp.x, temp.y);
+						glVertex2f(temp.x - 2 * hTriangle, temp.y);
+						glVertex2f(temp.x - 2 * hTriangle, temp.y - hTriangle);
+						glVertex2f(temp.x, temp.y - hTriangle);
+					glEnd();
+				}
+				
+				else { // for negative direction
+					glBegin(GL_POLYGON);
+						glVertex2f(temp.x, temp.y);
+						glVertex2f(temp.x + 2 * hTriangle, temp.y);
+						glVertex2f(temp.x + 2 * hTriangle, temp.y - hTriangle);
+						glVertex2f(temp.x, temp.y - hTriangle);
+					glEnd();
+				}
+			}
+		}
+	}
+}
+
 void myinit(void){
 
 	glViewport(0, 0, wViewport, 600);
@@ -173,66 +227,44 @@ void myinit(void){
 	gluOrtho2D(0.0, wViewport, 0.0, hViewport);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 
-	drawRoad();
-	drawUpperTriangle();
+	Vehicle v1; v1.type = 1; v1.direction = 1; v1.x = 100; v1.y = 2 * hTriangle;
+	std::vector<Vehicle> list1; list1.push_back(v1);
+	vehicleList.push_back(list1);
+
+
+	glutPostRedisplay();
 }
 
 
 void handleSpecialKeypress(int key, int x, int y) {
 	switch (key) {
 	case GLUT_KEY_UP:
-		if (isUpper) {
+		if (isUpper == 1) {
 			yTriangle += hTriangle;
+			
 			if (yTriangle == hViewport){
-				isUpper = 0;
+				isUpper = -1;
 				yTriangle -= hTriangle;
 			}
-			glClear(GL_COLOR_BUFFER_BIT);
-			drawRoad();
-			if (isUpper)
-				drawUpperTriangle();
-			else
-				drawLowerTriangle();
 		}
 		break;
 
 	case GLUT_KEY_RIGHT:
-		if (xTriangle + wTriangle < wViewport) {
-			xTriangle += wTriangle;
-			glClear(GL_COLOR_BUFFER_BIT);
-			drawRoad();
-			if (isUpper)
-				drawUpperTriangle();
-			else
-				drawLowerTriangle();
-		}
+		if (xTriangle + wTriangle < wViewport) xTriangle += wTriangle;
 		break;
 
 	case GLUT_KEY_LEFT:
-		if (xTriangle - wTriangle > 0) {
-			xTriangle -= wTriangle;
-			glClear(GL_COLOR_BUFFER_BIT);
-			drawRoad();
-			if (isUpper)
-				drawUpperTriangle();
-			else
-				drawLowerTriangle();
-		}
+		if (xTriangle - wTriangle > 0) xTriangle -= wTriangle;
 		break;
 
 	case GLUT_KEY_DOWN:
-		if (!isUpper) {
+		if (isUpper == -1) {
 			yTriangle -= hTriangle;
+			
 			if (yTriangle == 0) {
 				isUpper = 1;
 				yTriangle += hTriangle;
 			}
-			glClear(GL_COLOR_BUFFER_BIT);
-			drawRoad();
-			if (isUpper)
-				drawUpperTriangle();
-			else
-				drawLowerTriangle();
 		}
 	}
 	glutPostRedisplay();
@@ -240,6 +272,10 @@ void handleSpecialKeypress(int key, int x, int y) {
 
 
 void myDisplay(void) {
+	glClear(GL_COLOR_BUFFER_BIT);
+	drawRoad();
+	drawTriangle();
+	drawVehicles();
 	glFlush();
 }
 
