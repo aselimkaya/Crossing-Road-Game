@@ -1,4 +1,5 @@
 #include <time.h>
+#include <iostream>
 #include <stdlib.h>
 #include <vector>
 #include <gl/glut.h>
@@ -165,57 +166,233 @@ void drawRoad(){
 	glEnd();
 }
 
-void drawVehicles() {
+void drawCars() {
 	glColor3f(0.0, 1.0, 0.0);
-	
-	for (std::vector<std::vector<Vehicle>>::iterator listIterator = vehicleList.begin(); listIterator != vehicleList.end(); ++listIterator) {
-		
-		std::vector<Vehicle> listTemp = *listIterator;
-		
-		for (std::vector<Vehicle>::iterator it = listTemp.begin(); it != listTemp.end(); ++it) {
-			Vehicle temp = *it;
-			if (temp.type) { // means this vehicle is a square
-				
-				if (temp.direction) { // for positive direction
+
+	for (auto& row : vehicleList) {
+		for (auto& col : row) {
+			if (col.type) { // means this vehicle is a square
+
+				if (col.direction) { // for positive direction
 					glBegin(GL_POLYGON);
-						glVertex2f(temp.x, temp.y);
-						glVertex2f(temp.x-hTriangle, temp.y);
-						glVertex2f(temp.x - hTriangle, temp.y-hTriangle);
-						glVertex2f(temp.x, temp.y - hTriangle);
+					glVertex2f(col.x, col.y);
+					glVertex2f(col.x - hTriangle, col.y);
+					glVertex2f(col.x - hTriangle, col.y - hTriangle);
+					glVertex2f(col.x, col.y - hTriangle);
 					glEnd();
 				}
-				
+
 				else { // for negative direction
 					glBegin(GL_POLYGON);
-						glVertex2f(temp.x, temp.y);
-						glVertex2f(temp.x + hTriangle, temp.y);
-						glVertex2f(temp.x + hTriangle, temp.y - hTriangle);
-						glVertex2f(temp.x, temp.y - hTriangle);
+					glVertex2f(col.x, col.y);
+					glVertex2f(col.x + hTriangle, col.y);
+					glVertex2f(col.x + hTriangle, col.y - hTriangle);
+					glVertex2f(col.x, col.y - hTriangle);
 					glEnd();
 				}
 			}
-			
+
 			else { // means this vehicle is a rectangle
-				if (temp.direction) { // for positive direction
+				if (col.direction) { // for positive direction
 					glBegin(GL_POLYGON);
-						glVertex2f(temp.x, temp.y);
-						glVertex2f(temp.x - 2 * hTriangle, temp.y);
-						glVertex2f(temp.x - 2 * hTriangle, temp.y - hTriangle);
-						glVertex2f(temp.x, temp.y - hTriangle);
+					glVertex2f(col.x, col.y);
+					glVertex2f(col.x - 2 * hTriangle, col.y);
+					glVertex2f(col.x - 2 * hTriangle, col.y - hTriangle);
+					glVertex2f(col.x, col.y - hTriangle);
 					glEnd();
 				}
-				
+
 				else { // for negative direction
 					glBegin(GL_POLYGON);
-						glVertex2f(temp.x, temp.y);
-						glVertex2f(temp.x + 2 * hTriangle, temp.y);
-						glVertex2f(temp.x + 2 * hTriangle, temp.y - hTriangle);
-						glVertex2f(temp.x, temp.y - hTriangle);
+					glVertex2f(col.x, col.y);
+					glVertex2f(col.x + 2 * hTriangle, col.y);
+					glVertex2f(col.x + 2 * hTriangle, col.y - hTriangle);
+					glVertex2f(col.x, col.y - hTriangle);
 					glEnd();
 				}
 			}
 		}
 	}
+}
+
+void drawVehicles() {
+	glColor3f(0.0, 1.0, 0.0);
+	
+	for (int index = 0; index < vehicleList.size(); ++index) {
+		
+		for (int j = 0; j < vehicleList[index].size(); j++) {
+			if (vehicleList[index][j].type) { // means this vehicle is a square
+				
+				if (vehicleList[index][j].direction) { // for positive direction
+					glBegin(GL_POLYGON);
+						glVertex2f(vehicleList[index][j].x, vehicleList[index][j].y);
+						glVertex2f(vehicleList[index][j].x-hTriangle, vehicleList[index][j].y);
+						glVertex2f(vehicleList[index][j].x - hTriangle, vehicleList[index][j].y-hTriangle);
+						glVertex2f(vehicleList[index][j].x, vehicleList[index][j].y - hTriangle);
+					glEnd();
+				}
+				
+				else { // for negative direction
+					glBegin(GL_POLYGON);
+						glVertex2f(vehicleList[index][j].x, vehicleList[index][j].y);
+						glVertex2f(vehicleList[index][j].x + hTriangle, vehicleList[index][j].y);
+						glVertex2f(vehicleList[index][j].x + hTriangle, vehicleList[index][j].y - hTriangle);
+						glVertex2f(vehicleList[index][j].x, vehicleList[index][j].y - hTriangle);
+					glEnd();
+				}
+			}
+			
+			else { // means this vehicle is a rectangle
+				if (vehicleList[index][j].direction) { // for positive direction
+					glBegin(GL_POLYGON);
+						glVertex2f(vehicleList[index][j].x, vehicleList[index][j].y);
+						glVertex2f(vehicleList[index][j].x - 2 * hTriangle, vehicleList[index][j].y);
+						glVertex2f(vehicleList[index][j].x - 2 * hTriangle, vehicleList[index][j].y - hTriangle);
+						glVertex2f(vehicleList[index][j].x, vehicleList[index][j].y - hTriangle);
+					glEnd();
+				}
+				
+				else { // for negative direction
+					glBegin(GL_POLYGON);
+						glVertex2f(vehicleList[index][j].x, vehicleList[index][j].y);
+						glVertex2f(vehicleList[index][j].x + 2 * hTriangle, vehicleList[index][j].y);
+						glVertex2f(vehicleList[index][j].x + 2 * hTriangle, vehicleList[index][j].y - hTriangle);
+						glVertex2f(vehicleList[index][j].x, vehicleList[index][j].y - hTriangle);
+					glEnd();
+				}
+			}
+		}
+	}
+}
+
+static void up() {
+	int count = 2;
+	for (auto& row : vehicleList) {
+		if (count == 6 || count == 10 || count == 15 || count == 20) // this count is for determining the # of road. This numbers are safe places, not road.
+			count++; // Then, we increase the count for skipping safe places.
+
+		for (auto& col : row) {
+
+			if (col.direction)
+				col.x += (count % 5) * 5 + 10;
+			else
+				col.x -= (count % 3) * 2 + 10;
+		}
+
+		if (!(rand() % 35)) {
+			Vehicle v;
+			if (count % 2) { // If the # of road is a odd number, we assign its direction +x.
+				v.direction = 1;
+				v.x = 0;
+				v.y = count * hTriangle;
+			}
+			else {
+				v.direction = 0;
+				v.x = wViewport;
+				v.y = count * hTriangle;
+			}
+
+			if (rand() % 2) v.type = 1;
+
+			else v.type = 0;
+
+			row.push_back(v);
+		}
+		count++;
+	}
+}
+
+static void update() {
+	int count = 1;
+	for (int index = 0; index < vehicleList.size(); ++index) {
+		if (count == 6 || count == 10 || count == 15 || count == 20) // this count is for determining the # of road. This numbers are safe places, not road.
+			count++; // Then, we increase the count for skipping safe places.
+
+		for (int j = 0; j < vehicleList[index].size(); j++) {
+			vehicleList[index][j];
+
+			if (vehicleList[index][j].direction)
+				vehicleList[index][j].x += 2;
+			else
+				vehicleList[index][j].direction -= 2;
+		}
+
+		if (!(rand() % 5)) {
+			Vehicle v;
+			if (count % 2) { // If the # of road is a odd number, we assign its direction +x.
+				v.direction = 1;
+				v.x = 0;
+				v.y = count * hTriangle;
+			}
+			else {
+				v.direction = 0;
+				v.x = wViewport;
+				v.y = count * hTriangle;
+			}
+
+			if (rand() % 2) v.type = 1;
+
+			else v.type = 0;
+
+			vehicleList[index].push_back(v);
+		}
+	}
+}
+
+static void updateVehicles() {
+	std::cout << "Working\n";
+	int count = 1;
+	//for (int index = 0; index < vehicleList.size(); ++index)
+	for (std::vector<std::vector<Vehicle>>::iterator listIterator = vehicleList.begin(); listIterator != vehicleList.end(); ++listIterator) {
+		std::vector<Vehicle> listTemp = *listIterator;
+		count++;
+		std::cout << count << std::endl;
+		std::cout << "Size ";
+		std::cout << listTemp.size() << std::endl;
+
+		if (count == 6 || count == 10 || count == 15 || count == 20) // this count is for determining the # of road. This numbers are safe places, not road.
+			count++; // Then, we increase the count for skipping safe places.
+
+		for (std::vector<Vehicle>::iterator it = listTemp.begin(); it != listTemp.end(); ++it) {
+			Vehicle tmp = *it;
+
+			if (tmp.direction)
+				tmp.x += 2;
+			else
+				tmp.direction -= 2;
+		}
+
+		if (!(rand() % 5)) {
+			std::cout << "Girdi" << std::endl;
+			Vehicle v;
+			if (count % 2) { // If the # of road is a odd number, we assign its direction +x.
+				v.direction = 1;
+				v.x = 0;
+				v.y = count * hTriangle;
+			}
+			else {
+				v.direction = 0;
+				v.x = wViewport;
+				v.y = count * hTriangle;
+			}
+
+			if (rand() % 2) v.type = 1; 
+			
+			else v.type = 0;
+
+			listTemp.push_back(v);
+
+			std::cout << "Eklendikten sonra ";
+			std::cout << listTemp.size() << std::endl;
+		}
+	}
+
+}
+
+void myTimer(int val) {
+	up();
+	glutPostRedisplay();
+	glutTimerFunc(500, myTimer, 0);
 }
 
 void myinit(void){
@@ -226,11 +403,6 @@ void myinit(void){
 	glLoadIdentity();
 	gluOrtho2D(0.0, wViewport, 0.0, hViewport);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
-
-	Vehicle v1; v1.type = 1; v1.direction = 1; v1.x = 100; v1.y = 2 * hTriangle;
-	std::vector<Vehicle> list1; list1.push_back(v1);
-	vehicleList.push_back(list1);
-
 
 	glutPostRedisplay();
 }
@@ -275,7 +447,7 @@ void myDisplay(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
 	drawRoad();
 	drawTriangle();
-	drawVehicles();
+	drawCars();
 	glFlush();
 }
 
@@ -287,5 +459,7 @@ int main(int argc, char** argv) {
 	myinit();
 	glutDisplayFunc(myDisplay);
 	glutSpecialFunc(handleSpecialKeypress);
+	//glutTimerFunc(2000, myTimer, 0);
+	myTimer(0);
 	glutMainLoop();
 }

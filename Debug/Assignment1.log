@@ -1,19 +1,43 @@
 ﻿  Assg1.cpp
-c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(16): warning C4244: 'initializing': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(17): warning C4244: 'initializing': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(178): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(179): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
 c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(181): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(182): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(184): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(187): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(188): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
 c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(190): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(191): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(193): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(198): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(199): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
 c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(201): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(202): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(204): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(207): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(208): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
 c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(210): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(211): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(213): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(223): warning C4244: 'argument': conversion from 'GLfloat' to 'GLsizei', possible loss of data
-c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(230): warning C4244: '=': conversion from 'GLfloat' to 'int', possible loss of data
-c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(285): warning C4244: 'argument': conversion from 'GLfloat' to 'int', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(221): warning C4018: '<': signed/unsigned mismatch
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(223): warning C4018: '<': signed/unsigned mismatch
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(228): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(229): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(231): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(237): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(238): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(240): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(248): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(249): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(251): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(257): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(258): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(260): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(287): warning C4244: '=': conversion from 'GLfloat' to 'int', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(291): warning C4244: '=': conversion from 'GLfloat' to 'int', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(292): warning C4244: '=': conversion from 'GLfloat' to 'int', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(307): warning C4018: '<': signed/unsigned mismatch
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(311): warning C4018: '<': signed/unsigned mismatch
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(325): warning C4244: '=': conversion from 'GLfloat' to 'int', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(329): warning C4244: '=': conversion from 'GLfloat' to 'int', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(330): warning C4244: '=': conversion from 'GLfloat' to 'int', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(371): warning C4244: '=': conversion from 'GLfloat' to 'int', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(375): warning C4244: '=': conversion from 'GLfloat' to 'int', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(376): warning C4244: '=': conversion from 'GLfloat' to 'int', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(400): warning C4244: 'argument': conversion from 'GLfloat' to 'GLsizei', possible loss of data
+c:\users\ask\documents\visual studio 2017\projects\assignment1\assg1.cpp(457): warning C4244: 'argument': conversion from 'GLfloat' to 'int', possible loss of data
   Assignment1.vcxproj -> C:\Users\ask\Documents\Visual Studio 2017\Projects\Assignment1\Debug\Assignment1.exe
   Assignment1.vcxproj -> C:\Users\ask\Documents\Visual Studio 2017\Projects\Assignment1\Debug\Assignment1.pdb (Partial PDB)
