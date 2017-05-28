@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <vector>
 #include <gl/glut.h>
+#include<GL/freeglut.h>
+
+void myTimer(int val);
 
 GLfloat hViewport = 600.0, wViewport = 500.0;
 GLfloat hTriangle = hViewport / 25.0, wTriangle = wViewport / 25.0;
@@ -24,17 +27,32 @@ typedef struct {
 	int duration = 300;
 } Circle;
 
+typedef struct {
+	int x;
+	int y;
+	int r = hTriangle / 2;
+	int duration = 100;
+} SpecialCircle;
+
 
 std::vector<std::vector<Vehicle>> vehicleList (19);
 std::vector<Circle> coins;
+std::vector<SpecialCircle> specialCoins;
 
 //This variable is a flag for triangle's direction. If it is 1, it means the triangle is going up. If it is -1, it means down.
 int isUpper = 1;
 
+int score = 0, collectedCoins = 0, collectedSuperCoins = 0;
+
+int powerUp = 0, powerUpDuration = 150;
+
+int pauseFlag = 0;
+
 void drawTriangle() {
 	//glClear(GL_COLOR_BUFFER_BIT);
 	
-	glColor3f(1.0, 0.0, 0.0);
+	if(powerUp) glColor3f((rand() / ((double)RAND_MAX)), (rand() / ((double)RAND_MAX)), (rand() / ((double)RAND_MAX)));
+	else glColor3f(1.0, 0.0, 0.0);
 	glBegin(GL_TRIANGLES);
 		glVertex2f(xTriangle, yTriangle);
 		glVertex2f(xTriangle - (wTriangle / 2), yTriangle - (isUpper * hTriangle));  //In here, we are using the flag.
@@ -175,8 +193,10 @@ void drawRoad(){
 	glEnd();
 }
 
-void drawCars() {
-	glColor3f(0.6, 0.6, 0.6);
+void drawVehicles() {
+	
+	if (powerUp) glColor3f((rand() / ((double)RAND_MAX)), (rand() / ((double)RAND_MAX)), (rand() / ((double)RAND_MAX)));
+	else glColor3f(0.6, 0.6, 0.6);
 
 	for (auto& row : vehicleList) {
 		for (auto& col : row) {
@@ -245,9 +265,36 @@ void drawCoins() {
 	glColor3f(1.0, 1.0, 0.0);
 	for (auto& coin : coins) 
 		drawCircle(coin.x, coin.y, coin.r);
+	for (auto& specialCoin: specialCoins){
+		glColor3f((rand() / ((double)RAND_MAX)), (rand() / ((double)RAND_MAX)), (rand() / ((double)RAND_MAX)));
+		drawCircle(specialCoin.x, specialCoin.y, specialCoin.r);
+	}
 }
 
-static void up() {
+void bitMapString(float x, float y, char s[]) {
+	int i = 0;
+	glRasterPos2f(x, y);
+	while (s[i] != '\0') {
+		glutBitmapCharacter(GLUT_BITMAP_8_BY_13, s[i]);
+		++i;
+	}
+}
+
+void closureScreen() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glLoadIdentity();
+	std::string total("You collected " + collectedCoins);
+	total += " coins. Your score is ";
+	total += score + 5 * collectedCoins + 10 * collectedSuperCoins;
+	
+	char tab2[1024];
+	strcpy(tab2, total.c_str());
+	glColor3f(1.0, 1.0, 0.0);
+	bitMapString(100, 100, tab2);
+	glFlush();
+}
+
+static void update() {
 	int count = 2; // this count is the # of road. because of the first one is a safe place, we started with 2
 	for (auto& road : vehicleList) {
 		if (count == 6 || count == 10 || count == 15 || count == 20) // this count is for determining the # of road. This numbers are safe places, not road.
@@ -255,62 +302,74 @@ static void up() {
 
 		for (auto& vehicle : road) { // updating vehicles' places
 			if (vehicle.direction)
-				vehicle.x += (count % 3) * 2 + 3;
+				vehicle.x += (count % 3) * 4 + 5;
 			else
-				vehicle.x -= (count % 3) * 3 + 2;
+				vehicle.x -= (count % 3) * 5 + 4;
 
 			// this part is for determining if a vehicle crushes to our triangle or not
 
-			if (isUpper == 1) { // means our triangle goes up
-				if (vehicle.y == yTriangle && vehicle.x >= xTriangle - wTriangle / 2 && vehicle.x <= xTriangle + wTriangle/2)
-					exit(0); // ADD A CLOSING METHOD HERE
-
-				else {
-					if (vehicle.direction) { // +x
-						if (vehicle.type) { // square
-							if (vehicle.y == yTriangle && xTriangle <= vehicle.x && xTriangle >= vehicle.x - hTriangle)
-								exit(0);
-						}
-						else { // rectangle
-							if (vehicle.y == yTriangle && xTriangle <= vehicle.x && xTriangle >= vehicle.x - 2 * hTriangle)
-								exit(0);
-						}
+			if (!powerUp) {
+				if (isUpper == 1) { // means our triangle goes up
+					if (vehicle.y == yTriangle && vehicle.x >= xTriangle - wTriangle / 2 && vehicle.x <= xTriangle + wTriangle / 2) {
+						//timerFlag = 0; //closureScreen();
 					}
-					else { // -x
-						if (vehicle.type) { // square
-							if (vehicle.y == yTriangle && xTriangle >= vehicle.x && xTriangle <= vehicle.x + hTriangle)
-								exit(0);
+
+					else {
+						if (vehicle.direction) { // +x
+							if (vehicle.type) { // square
+								if (vehicle.y == yTriangle && xTriangle <= vehicle.x && xTriangle >= vehicle.x - hTriangle) {
+									//timerFlag = 0; //closureScreen();
+								}
+							}
+							else { // rectangle
+								if (vehicle.y == yTriangle && xTriangle <= vehicle.x && xTriangle >= vehicle.x - 2 * hTriangle) {
+									//timerFlag = 0; //closureScreen();
+								}
+							}
 						}
-						else { // rectangle
-							if (vehicle.y == yTriangle && xTriangle >= vehicle.x && xTriangle <= vehicle.x + 2 * hTriangle)
-								exit(0);
+						else { // -x
+							if (vehicle.type) { // square
+								if (vehicle.y == yTriangle && xTriangle >= vehicle.x && xTriangle <= vehicle.x + hTriangle) {
+									//timerFlag = 0; //closureScreen();
+								}
+							}
+							else { // rectangle
+								if (vehicle.y == yTriangle && xTriangle >= vehicle.x && xTriangle <= vehicle.x + 2 * hTriangle) {
+									//timerFlag = 0; //closureScreen();
+								}
+							}
 						}
 					}
 				}
-			}
-			else { // means our triangle goes down
-				if (vehicle.y == yTriangle + hTriangle && vehicle.x >= xTriangle - wTriangle / 2 && vehicle.x <= xTriangle + wTriangle / 2)
-					exit(0);
-
-				else {
-					if (vehicle.direction) { // +x
-						if (vehicle.type) { // square
-							if (vehicle.y == yTriangle + hTriangle && xTriangle <= vehicle.x && xTriangle >= vehicle.x - hTriangle)
-								exit(0);
-						}
-						else { // rectangle
-							if (vehicle.y == yTriangle + hTriangle && xTriangle <= vehicle.x && xTriangle >= vehicle.x - 2 * hTriangle)
-								exit(0);
-						}
+				else { // means our triangle goes down
+					if (vehicle.y == yTriangle + hTriangle && vehicle.x >= xTriangle - wTriangle / 2 && vehicle.x <= xTriangle + wTriangle / 2) {
+						//timerFlag = 0; //closureScreen();
 					}
-					else { // -x
-						if (vehicle.type) { // square
-							if (vehicle.y == yTriangle + hTriangle && xTriangle >= vehicle.x && xTriangle <= vehicle.x + hTriangle)
-								exit(0);
+
+					else {
+						if (vehicle.direction) { // +x
+							if (vehicle.type) { // square
+								if (vehicle.y == yTriangle + hTriangle && xTriangle <= vehicle.x && xTriangle >= vehicle.x - hTriangle) {
+									//timerFlag = 0; //closureScreen();
+								}
+							}
+							else { // rectangle
+								if (vehicle.y == yTriangle + hTriangle && xTriangle <= vehicle.x && xTriangle >= vehicle.x - 2 * hTriangle) {
+									//timerFlag = 0; //closureScreen();
+								}
+							}
 						}
-						else { // rectangle
-							if (vehicle.y == yTriangle + hTriangle && xTriangle >= vehicle.x && xTriangle <= vehicle.x + 2 * hTriangle)
-								exit(0);
+						else { // -x
+							if (vehicle.type) { // square
+								if (vehicle.y == yTriangle + hTriangle && xTriangle >= vehicle.x && xTriangle <= vehicle.x + hTriangle) {
+									//timerFlag = 0; //closureScreen();
+								}
+							}
+							else { // rectangle
+								if (vehicle.y == yTriangle + hTriangle && xTriangle >= vehicle.x && xTriangle <= vehicle.x + 2 * hTriangle) {
+									//timerFlag = 0; //closureScreen();
+								}
+							}
 						}
 					}
 				}
@@ -379,34 +438,78 @@ static void up() {
 			coins.erase(coins.begin() + i);
 	}
 
+	for (int i = 0; i < specialCoins.size(); i++) { // every single coin has a duration. when duration ends, the coin will disappear from the screen
+		specialCoins[i].duration--;
+		if (!specialCoins[i].duration)
+			specialCoins.erase(specialCoins.begin() + i);
+	}
+
+	if (powerUp)
+		powerUpDuration--;
+	if (!powerUpDuration)
+		powerUp = 0;
+
 	std::vector<Circle>::iterator it = coins.begin(); // this is an iteration for collecting coins. if the coins center overlaps with our triangle, it means we collected this coin
 
 	while (it != coins.end()) {
 		Circle c = *it;
 		if (c.x <= (xTriangle + (wTriangle / 2)) && c.x >= (xTriangle - (wTriangle / 2))) {
-			if (isUpper == 1 && c.y <= yTriangle && c.y >= yTriangle - hTriangle)
+			if (isUpper == 1 && c.y <= yTriangle && c.y >= yTriangle - hTriangle) {
 				it = coins.erase(it);
-			else if (isUpper == -1 && c.y >= yTriangle && c.y <= yTriangle + hTriangle)
+				collectedCoins++;
+			}
+			else if (isUpper == -1 && c.y >= yTriangle && c.y <= yTriangle + hTriangle) {
 				it = coins.erase(it);
+				collectedCoins++;
+			}
 			else
 				++it;
 		}
 		else ++it;
 	}
-		
+
+	std::vector<SpecialCircle>::iterator specIt = specialCoins.begin();
+
+	while (specIt != specialCoins.end()) {
+		SpecialCircle c = *specIt;
+		if (c.x <= (xTriangle + (wTriangle / 2)) && c.x >= (xTriangle - (wTriangle / 2))) {
+			if (isUpper == 1 && c.y <= yTriangle && c.y >= yTriangle - hTriangle) {
+				powerUp = 1; powerUpDuration = 150;
+				specIt = specialCoins.erase(specIt);
+				collectedSuperCoins++;
+			}
+			else if (isUpper == -1 && c.y >= yTriangle && c.y <= yTriangle + hTriangle) {
+				powerUp = 1; powerUpDuration = 150;
+				specIt = specialCoins.erase(specIt);
+				collectedSuperCoins++;
+			}
+			else
+				++specIt;
+		}
+		else ++specIt;
+	}
+
 	if (!(rand() % 100)) { // generating a coin randomly
 		Circle c;
 		c.x = rand() % 476 + 12;
 		c.y = (1 + (2 * rand()) % 50)*(hTriangle / 2);
 		coins.push_back(c);
 	}
+
+	if (!(rand() % 100)) { // generating a special coin randomly
+		SpecialCircle sc;
+		sc.x = rand() % 476 + 12;
+		sc.y = (1 + (2 * rand()) % 50)*(hTriangle / 2);
+		specialCoins.push_back(sc);
+	}
 }
 
 
-void myTimer(int val) {
-	up();
-	glutPostRedisplay();
-	glutTimerFunc(50, myTimer, val);
+void myTimer(int value) {
+		update();
+		glutPostRedisplay();
+		if(!pauseFlag)
+			glutTimerFunc(50, myTimer, value);
 }
 
 void myinit(void){
@@ -421,11 +524,25 @@ void myinit(void){
 	glutPostRedisplay();
 }
 
+void myKeyboard(unsigned char key, int x, int y){
+	if (key == 'Q' || key == 'q')
+		exit(0);
+}
+
+void mymouse(int btn, int state, int x, int y)
+{
+	if (btn == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		if (pauseFlag) pauseFlag = 0;
+		else pauseFlag = 1;
+		myTimer(0);
+	}
+}
 
 void handleSpecialKeypress(int key, int x, int y) {
 	switch (key) {
 	case GLUT_KEY_UP:
 		if (isUpper == 1) {
+			score++;
 			yTriangle += hTriangle;
 			
 			if (yTriangle == hViewport){
@@ -445,6 +562,7 @@ void handleSpecialKeypress(int key, int x, int y) {
 
 	case GLUT_KEY_DOWN:
 		if (isUpper == -1) {
+			score++;
 			yTriangle -= hTriangle;
 			
 			if (yTriangle == 0) {
@@ -461,7 +579,7 @@ void myDisplay(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
 	drawRoad();
 	drawTriangle();
-	drawCars();
+	drawVehicles();
 	drawCoins();
 	glFlush();
 }
@@ -474,7 +592,8 @@ int main(int argc, char** argv) {
 	myinit();
 	glutDisplayFunc(myDisplay);
 	glutSpecialFunc(handleSpecialKeypress);
-	//glutTimerFunc(2000, myTimer, 0);
+	glutMouseFunc(mymouse);
+	glutKeyboardFunc(myKeyboard);
 	myTimer(0);
 	glutMainLoop();
 }
