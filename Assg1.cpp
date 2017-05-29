@@ -1,5 +1,4 @@
 #include <time.h>
-#include <iostream>
 #include <stdlib.h>
 #include <vector>
 #include <gl/glut.h>
@@ -47,7 +46,7 @@ int score = 0, collectedCoins = 0, collectedSuperCoins = 0;
 
 int powerUp = 0, powerUpDuration = 150;
 
-int pauseFlag = 0, exitFlag = 0;
+int pauseFlag = 0, exitFlag = 0, debugFlag = 0;
 
 void drawTriangle() {
 	//glClear(GL_COLOR_BUFFER_BIT);
@@ -287,7 +286,7 @@ void closureScreen() {
 	total += std::to_string(collectedCoins);
 	total += " coins and ";
 	total += std::to_string(collectedSuperCoins);
-	total += " super coins."; 
+	total += " Super coins."; 
 	std::string total2 = "Your score is ";
 	total2 += std::to_string(score + 5 * collectedCoins + 10 * collectedSuperCoins);
 	
@@ -299,7 +298,72 @@ void closureScreen() {
 	bitMapString(200,350, "GAME OVER");
 	bitMapString(80, 300, temp);
 	bitMapString(180, 250, temp2);
-	glFlush();
+}
+
+void writeCoordinates() {
+	glColor3f(0.0, 0.0, 1.0);
+
+	std::string coordinateTriangle("(x = ");
+	coordinateTriangle += std::to_string(xTriangle);
+	coordinateTriangle += ", y = ";
+	coordinateTriangle += std::to_string(yTriangle);
+	coordinateTriangle += ", direction = ";
+	coordinateTriangle += std::to_string(isUpper);
+	coordinateTriangle += ")";
+
+	char tempTriangle[1024];
+	strcpy(tempTriangle, coordinateTriangle.c_str());
+	bitMapString(xTriangle, yTriangle, tempTriangle);
+
+	for (auto& road : vehicleList) {
+		for (auto& vehicle : road) {
+			std::string coordinateVehicle("(x = ");
+			coordinateVehicle += std::to_string(vehicle.x);
+			coordinateVehicle += ", y = ";
+			coordinateVehicle += std::to_string(vehicle.y);
+			coordinateVehicle += ", direction = ";
+			coordinateVehicle += std::to_string(vehicle.direction);
+			coordinateVehicle += ", type = ";
+			coordinateVehicle += std::to_string(vehicle.type);
+			coordinateVehicle += ")";
+
+			char tempVehicle[1024];
+			strcpy(tempVehicle, coordinateVehicle.c_str());
+			bitMapString(vehicle.x, vehicle.y, tempVehicle);
+		}
+	}
+
+	for (auto& coin : coins) {
+		std::string coordinateCoin("(x = ");
+		coordinateCoin += std::to_string(coin.x);
+		coordinateCoin += ", y = ";
+		coordinateCoin += std::to_string(coin.y);
+		coordinateCoin += ", radius = ";
+		coordinateCoin += std::to_string(coin.r);
+		coordinateCoin += ", duration = ";
+		coordinateCoin += std::to_string(coin.duration);
+		coordinateCoin += ")";
+
+		char tempCoin[1024];
+		strcpy(tempCoin, coordinateCoin.c_str());
+		bitMapString(coin.x, coin.y, tempCoin);
+	}
+
+	for (auto& coin : specialCoins) {
+		std::string coordinateSpecialCoin("(x = ");
+		coordinateSpecialCoin += std::to_string(coin.x);
+		coordinateSpecialCoin += ", y = ";
+		coordinateSpecialCoin += std::to_string(coin.y);
+		coordinateSpecialCoin += ", radius = ";
+		coordinateSpecialCoin += std::to_string(coin.r);
+		coordinateSpecialCoin += ", duration = ";
+		coordinateSpecialCoin += std::to_string(coin.duration);
+		coordinateSpecialCoin += ")";
+
+		char tempSpecialCoin[1024];
+		strcpy(tempSpecialCoin, coordinateSpecialCoin.c_str());
+		bitMapString(coin.x, coin.y, tempSpecialCoin);
+	}
 }
 
 static void update() {
@@ -495,7 +559,7 @@ static void update() {
 		coins.push_back(c);
 	}
 
-	if (!(rand() % 100)) { // generating a special coin randomly
+	if (!(rand() % 200)) { // generating a special coin randomly
 		SpecialCircle sc;
 		sc.x = rand() % 476 + 12;
 		sc.y = (1 + (2 * rand()) % 50)*(hTriangle / 2);
@@ -513,7 +577,7 @@ void myTimer(int value) {
 
 void myinit(void){
 
-	glViewport(0, 0, wViewport, 600);
+	glViewport(0, 0, wViewport, hViewport);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -531,9 +595,18 @@ void myKeyboard(unsigned char key, int x, int y){
 void mymouse(int btn, int state, int x, int y)
 {
 	if (btn == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		if (pauseFlag) pauseFlag = 0;
-		else pauseFlag = 1;
+		pauseFlag = 0;
 		myTimer(0);
+	}
+
+	if (btn == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN) {
+		pauseFlag = 1;
+		myTimer(0);
+	}
+
+	if (btn == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+		if (debugFlag) debugFlag = 0;
+		else debugFlag = 1;
 	}
 }
 
@@ -585,6 +658,8 @@ void myDisplay(void) {
 		drawTriangle();
 		drawVehicles();
 		drawCoins();
+		if (debugFlag)
+			writeCoordinates();
 	}
 	glFlush();
 }
