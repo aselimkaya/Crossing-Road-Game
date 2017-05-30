@@ -595,8 +595,11 @@ void myKeyboard(unsigned char key, int x, int y){
 void mymouse(int btn, int state, int x, int y)
 {
 	if (btn == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		pauseFlag = 0;
-		myTimer(0);
+		debugFlag = 0;
+		if (pauseFlag) {
+			pauseFlag = 0;
+			myTimer(0);
+		}
 	}
 
 	if (btn == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN) {
@@ -605,8 +608,9 @@ void mymouse(int btn, int state, int x, int y)
 	}
 
 	if (btn == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
-		if (debugFlag) debugFlag = 0;
-		else debugFlag = 1;
+		pauseFlag = 1;
+		myTimer(0);
+		debugFlag = 1;
 	}
 }
 
